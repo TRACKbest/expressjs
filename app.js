@@ -122,6 +122,13 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
+// Route pour afficher un message JSON
+app.get('/bonjour', (req, res) => {
+  res.json({ message: 'Bonjour Fares' });
+});
+
+
+
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
