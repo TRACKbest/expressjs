@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | PharmaCare</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .vh-100 {
+            height: 100vh;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link i {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar bg-dark text-white vh-100">
+        <div class="p-3">
+            <h2 class="text-center">PharmaCare</h2>
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/medicament" class="nav-link text-white">
+                        <i class="fas fa-file-medical"></i> Doctor Orders
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/medicaments" class="nav-link text-white">
+                        <i class="fas fa-cash-register"></i> PoS
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/suppliers" class="nav-link text-white">
+                        <i class="fas fa-truck"></i> Suppliers
+                    </a>
+                </li>
+
+                 <li class="nav-item">
+                    <a href="/users" class="nav-link text-white">
+                        <i class="fas fa-user"></i> Users
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link text-white">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main-content p-4 flex-grow-1">
+        <div class="container-fluid">
+            <!-- Statistics Section -->
+            <div class="row mb-4">
+                {{#each stats}}
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5 class="card-title">{{title}}</h5>
+                            <p class="card-text display-5">{{value}}</p>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+
+            <!-- Notifications Section -->
+            <div class="row mb-4">
+                <!-- Expired Medicines -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Expired Medicines</div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                {{#each expireNotifications}}
+                                <li class="list-group-item">
+                                    <strong>Name:</strong> {{name}} - <strong>Batch ID:</strong> {{batchId}}
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Out of Stock Medicines -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Out of Stock Medicines</div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                {{#each outOfStockNotifications}}
+                                <li class="list-group-item">
+                                    <strong>Name:</strong> {{name}} - <strong>Batch ID:</strong> {{batchId}}
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Sales Chart</div>
+                        <div class="card-body">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Medicines Quantity</div>
+                        <div class="card-body">
+                            <canvas id="quantityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sales Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: {{json sales.labels}},
+                datasets: [{
+                    label: 'Sales',
+                    data: {{json sales.data}},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        // Quantity Chart
+        const quantityCtx = document.getElementById('quantityChart').getContext('2d');
+        new Chart(quantityCtx, {
+            type: 'line',
+            data: {
+                labels: {{json quantity.labels}},
+                datasets: [{
+                    label: 'Quantity',
+                    data: {{json quantity.data}},
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

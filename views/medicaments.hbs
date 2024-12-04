@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System - Dark Mode</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2b2b3c;
+            color: #e0e0e0;
+        }
+        .sidebar h2 {
+            text-align: center;
+            padding: 20px 0;
+            color: #20c997;
+        }
+        .sidebar .nav-link {
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #3a3a4d;
+        }
+        .sidebar .nav-link.active {
+            background-color: #495057;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #282838;
+        }
+        .tab-pane {
+            padding: 20px;
+            border: 1px solid #3a3a4d;
+            background-color: #2b2b3c;
+            border-radius: 5px;
+        }
+        .btn-signup {
+            background-color: #20c997;
+            color: white;
+        }
+        .btn-signup:hover {
+            background-color: #17a589;
+        }
+        .form-control {
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+            border: 1px solid #495057;
+        }
+        .form-control:focus {
+            background-color: #1e1e2f;
+            color: #fff;
+            border-color: #20c997;
+            box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25);
+        }
+        .form-check-input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .nav-tabs .nav-link {
+            color: #e0e0e0;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #3a3a4d;
+            color: #20c997;
+            border-color: #495057 #495057 #282838;
+        }
+        header h1 {
+            color: #20c997;
+        }
+        header .btn {
+            background-color: #495057;
+            color: #e0e0e0;
+        }
+        header .btn:hover {
+            background-color: #3a3a4d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <h2>PharmaCare</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="/doctor-orders" class="nav-link"><i class="fas fa-file-medical"></i> Doctor Orders</a>
+            </li>
+            <li class="nav-item">
+                <a href="/medicaments" class="nav-link"><i class="fas fa-cash-register"></i> PoS</a>
+            </li>
+            <li class="nav-item">
+                <a href="/suppliers" class="nav-link"><i class="fas fa-truck"></i> Suppliers</a>
+            </li>
+            <li class="nav-item">
+                <a href="/users" class="nav-link active"><i class="fas fa-user-alt"></i> Users</a>
+            </li>
+            <li class="nav-item">
+                <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Pharmacist</h1>
+           
+        </header>
+
+        <!-- Tabs -->
+     <!-- Tabs -->
+<ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="add-medicament-tab" data-bs-toggle="tab" data-bs-target="#add-medicament" type="button" role="tab" aria-controls="add-medicament" aria-selected="true">Add New Medicament</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="manage-medicament-tab" data-bs-toggle="tab" data-bs-target="#manage-medicament" type="button" role="tab" aria-controls="manage-medicament" aria-selected="false">Manage Medicaments</button>
+    </li>
+<li class="nav-item" role="presentation">
+    <button class="nav-link" id="view-medicament-stats-tab" data-bs-toggle="tab" data-bs-target="#view-medicament-stats" type="button" role="tab" aria-controls="view-medicament-stats" aria-selected="false">View Medicament Statistics</button>
+</li>
+
+</ul>
+
+<!-- Tab Content -->
+        <div class="tab-content">
+<!-- Add Medicament -->
+<div class="tab-pane fade show active" id="add-medicament" role="tabpanel" aria-labelledby="add-medicament-tab">
+  <h3>Add New Medicament</h3>
+  <form action="/add-medicament" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="nom" class="form-label">Medicament Name</label>
+      <input type="text" id="nom" name="nom" class="form-control" placeholder="Enter medicament name" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea id="description" name="description" class="form-control" placeholder="Enter a brief description of the medicament" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="prix" class="form-label">Price</label>
+      <input type="number" id="prix" name="prix" class="form-control" step="0.01" placeholder="Enter price (e.g., 10.99)" required>
+    </div>
+    <div class="mb-3">
+      <label for="quantite" class="form-label">Quantity</label>
+      <input type="number" id="quantite" name="quantite" class="form-control" placeholder="Enter quantity in stock" required>
+    </div>
+    <div class="mb-3">
+      <label for="id_lot" class="form-label">Lot ID</label>
+      <input type="text" id="id_lot" name="id_lot" class="form-control" placeholder="Enter the lot ID" required>
+    </div>
+    <div class="mb-3">
+      <label for="date_expiration" class="form-label">Expiration Date</label>
+      <input type="date" id="date_expiration" name="date_expiration" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="fournisseur_email" class="form-label">Supplier Email</label>
+      <!-- Supplier email dropdown -->
+      <select id="fournisseur_email" name="fournisseur_email" class="form-control" required>
+        <option value="">Select a supplier</option>
+        {{#each fournisseurs}}
+          <option value="{{this.email}}">{{this.nom}} ({{this.email}})</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">Medicament Image</label>
+      <input type="file" id="image" name="image" class="form-control" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Medicament</button>
+  </form>
+</div>
+
+
+</div>
+
+
+    <!-- Manage Medicaments -->
+<div class="tab-pane fade" id="manage-medicament" role="tabpanel" aria-labelledby="manage-medicament-tab">
+  <h3>Manage Medicaments</h3>
+  <div class="mb-3">
+    <input type="text" id="searchMedicament" class="form-control" placeholder="{{manageMedicament.searchPlaceholder}}">
+  </div>
+  <table class="table table-dark table-hover">
+    <thead>
+      <tr>
+        {{#each manageMedicament.tableHeaders}}
+        <th>{{this}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody id="medicamentTableBody">
+      <!-- Content will be dynamically inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<div id="statsLoader" class="spinner-border text-light" role="status" style="display: none;">
+  <span class="sr-only">Loading...</span>
+</div>
+
+
+
+
+<div class="modal fade" id="editMedicamentModal" tabindex="-1" aria-labelledby="editMedicamentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editMedicamentForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMedicamentModalLabel">Edit Medicament</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Champs du formulaire -->
+                    <input type="hidden" id="editMedicamentId">
+                    <div class="mb-3">
+                        <label for="editMedicamentName" class="form-label">Name</label>
+                        <input type="text" id="editMedicamentName" class="form-control" required>
+                    </div>
+                    <!-- Ajouter les autres champs ici -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- View Medicament Stats -->
+<div class="tab-pane fade" id="view-medicament-stats" role="tabpanel" aria-labelledby="view-medicament-stats-tab">
+  <div class="container">
+  <h3>Medicament Statistics</h3>
+  <!-- Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-center bg-primary text-white">
+        <div class="card-body">
+          <h5>Total Medicaments</h5>
+          <h2 id="totalMedicaments">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center bg-danger text-white">
+        <div class="card-body">
+          <h5>Expired Medicaments</h5>
+          <h2 id="expiredMedicaments">0</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center bg-warning text-dark">
+        <div class="card-body">
+          <h5>Low Stock Medicaments</h5>
+          <h2 id="lowStockMedicaments">0</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Chart -->
+  <div class="mb-4">
+    <canvas id="medicamentStockChart"></canvas>
+  </div>
+  <!-- Table -->
+  <table class="table table-dark table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Category</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody id="medicamentStatsTableBody">
+      <!-- Data inserted dynamically -->
+    </tbody>
+  </table>
+</div>
+
+  </div>
+<!-- Section Chart -->
+<div class="mb-4">
+    <h4>Top 5 Medicaments by Quantity</h4>
+    <canvas id="medicamentStockChart"></canvas>
+</div>
+
+
+
+</div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Fetch and display medicaments
+    fetchMedicaments();
+
+    // Search functionality
+    document.getElementById('searchMedicament').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        filterMedicaments(query);
+    });
+});
+
+// Fetch medicaments and populate table
+function fetchMedicaments() {
+    fetch('/manage-medicaments')
+        .then(res => res.json())
+        .then(data => {
+            const tableBody = document.getElementById('medicamentTableBody');
+            tableBody.innerHTML = ''; // Clear the table
+            renderMedicaments(data); // Render medicaments
+        })
+        .catch(err => console.error('Error fetching medicaments:', err));
+}
+
+// Render medicaments in the table
+function renderMedicaments(medicaments) {
+    const tableBody = document.getElementById('medicamentTableBody');
+    medicaments.forEach((medicament, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${medicament.nom}</td>
+            <td>${medicament.description}</td>
+            <td>${medicament.prix}</td>
+            <td>${medicament.quantite}</td>
+            <td>${medicament.id_lot}</td>
+            <td>${medicament.date_expiration}</td>
+            <td>${medicament.fournisseur_email}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" onclick="editMedicament(${medicament.id_medicament})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteMedicament(${medicament.id_medicament})">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Filter medicaments based on search query
+function filterMedicaments(query) {
+    const rows = document.querySelectorAll('#medicamentTableBody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
+// Edit medicament
+function editMedicament(id) {
+    // Fetch medicament data via API
+    fetch(`/medicaments/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            // Pre-fill modal form
+            document.getElementById('editMedicamentId').value = data.id_medicament;
+            document.getElementById('editMedicamentName').value = data.nom;
+            document.getElementById('editMedicamentDescription').value = data.description;
+            document.getElementById('editMedicamentPrice').value = data.prix;
+            document.getElementById('editMedicamentQuantity').value = data.quantite;
+            document.getElementById('editMedicamentLotId').value = data.id_lot;
+            document.getElementById('editMedicamentExpirationDate').value = data.date_expiration;
+            document.getElementById('editMedicamentSupplierEmail').value = data.fournisseur_email;
+
+            // Show modal
+            const editModal = new bootstrap.Modal(document.getElementById('editMedicamentModal'));
+            editModal.show();
+        })
+        .catch(err => console.error('Error fetching medicament data:', err));
+}
+
+// Submit medicament edits
+document.getElementById('editMedicamentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const medicamentId = document.getElementById('editMedicamentId').value;
+    const updatedData = {
+        nom: document.getElementById('editMedicamentName').value,
+        description: document.getElementById('editMedicamentDescription').value,
+        prix: document.getElementById('editMedicamentPrice').value,
+        quantite: document.getElementById('editMedicamentQuantity').value,
+        id_lot: document.getElementById('editMedicamentLotId').value,
+        date_expiration: document.getElementById('editMedicamentExpirationDate').value,
+        fournisseur_email: document.getElementById('editMedicamentSupplierEmail').value
+    };
+
+    fetch(`/medicaments/${medicamentId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                alert('Medicament updated successfully!');
+                location.reload(); // Reload list after update
+            } else {
+                alert('Failed to update medicament. Please try again.');
+            }
+        })
+        .catch(err => console.error('Error updating medicament:', err));
+});
+
+// Delete medicament
+function deleteMedicament(id) {
+    if (confirm('Are you sure you want to delete this medicament?')) {
+        fetch(`/delete-medicament/${id}`, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                fetchMedicaments(); // Refresh table
+            })
+            .catch(err => console.error('Error deleting medicament:', err));
+    }
+}
+
+// Fetch and display medicament statistics
+function fetchMedicamentStats() {
+    fetch('/medicament-stats')
+        .then(res => res.json())
+        .then(data => {
+            // Mise à jour des cartes de statistiques
+            document.getElementById('totalMedicaments').textContent = data.totalMedicaments || 0;
+            document.getElementById('expiredMedicaments').textContent = data.expiredMedicaments || 0;
+            document.getElementById('lowStockMedicaments').textContent = data.lowStockMedicaments || 0;
+
+            // Mise à jour du tableau des statistiques
+            const tableBody = document.getElementById('medicamentStatsTableBody');
+            tableBody.innerHTML = '';
+            [
+                { category: 'Expired Medicaments', count: data.expiredMedicaments || 0 },
+                { category: 'Low Stock Medicaments', count: data.lowStockMedicaments || 0 },
+                { category: 'Total Medicaments', count: data.totalMedicaments || 0 }
+            ].forEach((stat, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${stat.category}</td>
+                    <td>${stat.count}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Rendu des graphiques
+            if (data.topMedicaments && data.topMedicaments.length > 0) {
+                renderTopMedicamentsChart(data.topMedicaments);
+            }
+        })
+        .catch(err => console.error('Error fetching medicament statistics:', err));
+}
+
+function renderTopMedicamentsChart(topMedicaments) {
+    const ctx = document.getElementById('medicamentStockChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topMedicaments.map(entry => entry.medicament_name),
+            datasets: [{
+                label: 'Top Medicaments by Quantity',
+                data: topMedicaments.map(entry => entry.quantite),
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+
+
+
+</script>

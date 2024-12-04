@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2b2b3c;
+            color: #e0e0e0;
+        }
+        .sidebar h2 {
+            text-align: center;
+            padding: 20px 0;
+            color: #20c997;
+        }
+        .sidebar .nav-link {
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #3a3a4d;
+        }
+        .sidebar .nav-link.active {
+            background-color: #495057;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #282838;
+        }
+        .tab-pane {
+            padding: 20px;
+            border: 1px solid #3a3a4d;
+            background-color: #2b2b3c;
+            border-radius: 5px;
+        }
+        .btn-signup {
+            background-color: #20c997;
+            color: white;
+        }
+        .btn-signup:hover {
+            background-color: #17a589;
+        }
+        .form-control {
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+            border: 1px solid #495057;
+        }
+        .form-control:focus {
+            background-color: #1e1e2f;
+            color: #fff;
+            border-color: #20c997;
+            box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25);
+        }
+        .form-check-input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .nav-tabs .nav-link {
+            color: #e0e0e0;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #3a3a4d;
+            color: #20c997;
+            border-color: #495057 #495057 #282838;
+        }
+        header h1 {
+            color: #20c997;
+        }
+        header .btn {
+            background-color: #495057;
+            color: #e0e0e0;
+        }
+        header .btn:hover {
+            background-color: #3a3a4d;
+        }
+    </style>
+</head>
+<body>
+       <!-- Sidebar -->
+    <nav class="sidebar">
+        <h2>PharmaCare</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="/doctor-orders" class="nav-link"><i class="fas fa-file-medical"></i> Doctor Orders</a>
+            </li>
+            <li class="nav-item">
+                <a href="/medicaments" class="nav-link active"><i class="fas fa-cash-register"></i> PoS</a>
+            </li>
+            <li class="nav-item">
+                <a href="/suppliers" class="nav-link"><i class="fas fa-truck"></i> Suppliers</a>
+            </li>
+            <li class="nav-item">
+                <a href="/users" class="nav-link"><i class="fas fa-user-alt"></i> Users</a>
+            </li>
+            <li class="nav-item">
+                <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1>{{header}}</h1>
+        </header>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            {{#each tabs}}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {{#if this.active}}active{{/if}}" id="{{this.id}}-tab" data-bs-toggle="tab" data-bs-target="#{{this.id}}" type="button" role="tab" aria-controls="{{this.id}}" aria-selected="{{this.active}}">
+                    {{this.label}}
+                </button>
+            </li>
+            {{/each}}
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+<!-- Add Medicament -->
+<div class="tab-pane fade show active" id="add-medicament" role="tabpanel" aria-labelledby="add-medicament-tab">
+  <h3>{{addMedicament.title}}</h3>
+  <form action="/add-medicament" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="nom" class="form-label">{{addMedicament.fields.name}}</label>
+      <input type="text" id="nom" name="nom" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">{{addMedicament.fields.description}}</label>
+      <textarea id="description" name="description" class="form-control" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="prix" class="form-label">{{addMedicament.fields.price}}</label>
+      <input type="number" id="prix" name="prix" class="form-control" step="0.01" required>
+    </div>
+    <div class="mb-3">
+      <label for="quantite" class="form-label">{{addMedicament.fields.quantity}}</label>
+      <input type="number" id="quantite" name="quantite" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="id_lot" class="form-label">{{addMedicament.fields.lotId}}</label>
+      <input type="text" id="id_lot" name="id_lot" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="date_expiration" class="form-label">{{addMedicament.fields.expirationDate}}</label>
+      <input type="date" id="date_expiration" name="date_expiration" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="fournisseur_email" class="form-label">{{addMedicament.fields.supplierEmail}}</label>
+      <input type="email" id="fournisseur_email" name="fournisseur_email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="image" class="form-label">{{addMedicament.fields.image}}</label>
+      <input type="file" id="image" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">{{addMedicament.submitButton}}</button>
+  </form>
+</div>
+
+
+
+       <!-- Manage Medicaments -->
+<div class="tab-pane fade" id="manage-medicament" role="tabpanel" aria-labelledby="manage-medicament-tab">
+  <h3>{{manageMedicament.title}}</h3>
+  <div class="mb-3">
+    <input type="text" id="searchMedicament" class="form-control" placeholder="{{manageMedicament.searchPlaceholder}}">
+  </div>
+  <table class="table table-dark table-hover">
+    <thead>
+      <tr>
+        {{#each manageMedicament.tableHeaders}}
+        <th>{{this}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody id="medicamentTableBody">
+      {{#each manageMedicament.medicaments}}
+      <tr>
+        <td>{{@index}}</td>
+        <td>{{this.nom}}</td>
+        <td>{{this.description}}</td>
+        <td>{{this.prix}}</td>
+        <td>{{this.quantite}}</td>
+        <td>{{this.id_lot}}</td>
+        <td>{{this.date_expiration}}</td>
+        <td>{{this.fournisseur_email}}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="editMedicament({{this.id_medicament}})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMedicament({{this.id_medicament}})">Delete</button>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+
+
+<!-- View Medicament Stats -->
+<div class="tab-pane fade" id="view-medicament-stats" role="tabpanel" aria-labelledby="view-medicament-stats-tab">
+  <h3>{{viewMedicamentStats.title}}</h3>
+  <div class="row mb-4">
+    {{#each viewMedicamentStats.cards}}
+    <div class="col-md-4">
+      <div class="card bg-dark text-white text-center">
+        <div class="card-body">
+          <h5>{{this.title}}</h5>
+          <h2>{{this.value}}</h2>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  <div class="mb-4">
+    <canvas id="medicamentStockChart"></canvas>
+  </div>
+  <table class="table table-dark table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{{viewMedicamentStats.table.categoryHeader}}</th>
+        <th>{{viewMedicamentStats.table.countHeader}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each viewMedicamentStats.table.rows}}
+      <tr>
+        <td>{{@index}}</td>
+        <td>{{this.category}}</td>
+        <td>{{this.count}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

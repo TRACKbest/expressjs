@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point de Vente - Pharmacie</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Liste des Médicaments</h3>
+            <input type="text" id="searchProduct" class="form-control mb-3" placeholder="Rechercher un médicament...">
+            <div class="product-list border p-3 bg-white" id="productList">
+                {{#each products}}
+                <div class="product-item d-flex justify-content-between align-items-center p-2 border-bottom">
+                    <span>{{name}} ({{description}})</span>
+                    <button class="btn btn-success btn-sm" onclick="addToCart({{id}}, '{{name}}', {{price}}, {{stock}})">
+                        Ajouter - {{price}} MAD
+                    </button>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Panier</h3>
+            <table class="table table-bordered cart-table">
+                <thead>
+                <tr>
+                    <th>Médicament</th>
+                    <th>Prix Unitaire</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="cartBody"></tbody>
+            </table>
+            <div class="checkout-section">
+                <p class="d-flex justify-content-between">
+                    <span>Sous-total :</span>
+                    <span id="subtotal">0 MAD</span>
+                </p>
+                <p class="d-flex justify-content-between">
+                    <span>Taxe (7%) :</span>
+                    <span id="tax">0 MAD</span>
+                </p>
+                <p class="d-flex justify-content-between checkout-total">
+                    <span>Total :</span>
+                    <span id="total">0 MAD</span>
+                </p>
+                <button class="btn btn-primary w-100" onclick="checkout()">Passer au Paiement</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    let cart = [];
+
+function addToCart(id, name, price, stock) {
+    const product = cart.find(item => item.id === id);
+    if (product) {
+        if (product.quantity < stock) {
+            product.quantity++;
+        } else {
+            alert("Stock insuffisant !");
+        }
+    } else {
+        cart.push({ id, name, price, quantity: 1 });
+    }
+    updateCart();
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    updateCart();
+}
+
+function updateCart() {
+    const cartBody = document.getElementById("cartBody");
+    let subtotal = 0;
+    cartBody.innerHTML = "";
+
+    cart.forEach(item => {
+        const total = item.quantity * item.price;
+        subtotal += total;
+
+        cartBody.innerHTML += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.price} MAD</td>
+                <td>${item.quantity}</td>
+                <td>${total} MAD</td>
+                <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})">Supprimer</button></td>
+            </tr>
+        `;
+    });
+
+    const tax = subtotal * 0.07;
+    document.getElementById("subtotal").innerText = `${subtotal.toFixed(2)} MAD`;
+    document.getElementById("tax").innerText = `${tax.toFixed(2)} MAD`;
+    document.getElementById("total").innerText = `${(subtotal + tax).toFixed(2)} MAD`;
+}
+
+async function checkout() {
+    if (!cart.length) {
+        alert("Votre panier est vide !");
+        return;
+    }
+
+    const total = document.getElementById("total").innerText;
+    const response = await fetch("/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cart, total }),
+    });
+
+    if (response.ok) {
+        alert("Commande réussie !");
+        cart = [];
+        updateCart();
+    } else {
+        alert("Erreur lors de la transaction.");
+    }
+}
+
+</script>
+</body>
+</html>

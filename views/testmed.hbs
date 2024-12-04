@@ -1,0 +1,33 @@
+<h2>Liste des Médicaments</h2>
+<div class="drug-container">
+  {{#each medicaments}}
+    <div class="drug-card">
+      <img src="{{this.image}}" alt="{{this.nom}}" class="drug-image">
+      <h3>{{this.nom}}</h3>
+      <p>Prix: {{this.prix}} FCFA</p>
+      <p>Quantité disponible: {{this.quantite}}</p>
+      <input type="number" id="quantity-{{this.id_medicament}}" class="quantity-input" min="1" max="{{this.quantite}}" placeholder="Quantité">
+      <button class="add-to-cart-btn" data-id="{{this.id_medicament}}" data-name="{{this.nom}}" data-price="{{this.prix}}">
+        Ajouter au panier
+      </button>
+    </div>
+  {{/each}}
+</div>
+
+<script>
+  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.getAttribute('data-id');
+      const name = button.getAttribute('data-name');
+      const price = button.getAttribute('data-price');
+      const quantity = document.getElementById(`quantity-${id}`).value;
+
+      if (!quantity || quantity <= 0) {
+        alert('Veuillez entrer une quantité valide');
+        return;
+      }
+
+      alert(`Ajouté ${quantity} x ${name} au prix de ${price} FCFA`);
+    });
+  });
+</script>

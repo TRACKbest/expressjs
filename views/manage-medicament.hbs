@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <title>Liste des Médicaments</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .drug-container-wrapper {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin: 20px;
+      overflow-x: hidden;
+    }
+
+    .arrow {
+      font-size: 24px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .arrow.left {
+      left: 10px;
+    }
+
+    .arrow.right {
+      right: 10px;
+    }
+
+    .drug-container {
+      display: flex;
+      gap: 10px;
+      overflow-x: scroll;
+      scroll-behavior: smooth;
+      padding: 10px 40px;
+    }
+
+    .drug-card {
+      flex: 0 0 30%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+      background-color: #f9f9f9;
+    }
+
+    .drug-image {
+      width: 100%;
+      height: auto;
+      max-height: 150px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .quantity-input {
+      width: 80%;
+      padding: 5px;
+      margin: 10px 0;
+    }
+
+    .add-to-cart-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .add-to-cart-btn:hover {
+      background-color: #218838;
+    }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+<h2>Liste des Médicaments</h2>
+
+<div class="drug-container-wrapper">
+  <button class="arrow left" onclick="scrollLeft()">&#8592;</button>
+  <div class="drug-container">
+    {{#each medicaments}}
+    <div class="drug-card">
+      <img src="{{this.image}}" alt="{{this.nom}}" class="drug-image">
+      <h3 style="color:black;">{{this.nom}}</h3>
+      <p style="color:black;">Prix: {{this.prix}} Ar</p>
+      <p style="color:black;">Quantité disponible: <span id="stock-{{this.id_medicament}}">{{this.quantite}}</span></p>
+      <input type="number" id="quantity-{{this.id_medicament}}" class="quantity-input" min="1" max="{{this.quantite}}" placeholder="Quantité" style="color:black;">
+      <button class="add-to-cart-btn" data-id="{{this.id_medicament}}" data-name="{{this.nom}}" data-price="{{this.prix}}">
+        Ajouter au panier
+      </button>
+    </div>
+    {{/each}}
+  </div>
+  <button class="arrow right" onclick="scrollRight()">&#8594;</button>
+</div>
+
+<table id="cart-table">
+  <thead>
+    <tr>
+      <th>ID Médicament</th>
+      <th>Nom</th>
+      <th>Quantité</th>
+      <th>Prix Total (Ar)</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<button id="checkout-btn" class="btn btn-primary rounded-pill">Passer au Commande</button>
+
+
+
+
+<script>
+ const container = document.querySelector('.drug-container');
+  function scrollLeft() {
+    container.scrollBy({ left: -300, behavior: 'smooth' });
+  }
+
+  function scrollRight() {
+    container.scrollBy({ left: 300, behavior: 'smooth' });
+  }
+
+  const cart = [];
+
+  // Gestion des boutons "Ajouter au panier"
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const id = button.getAttribute('data-id');
+        const name = button.getAttribute('data-name');
+        const price = parseFloat(button.getAttribute('data-price'));
+        const quantityInput = document.getElementById(`quantity-${id}`);
+        const quantity = parseInt(quantityInput.value, 10);
+        const stockSpan = document.getElementById(`stock-${id}`);
+        const availableQuantity = parseInt(stockSpan.innerText, 10);
+
+        if (!quantity || quantity <= 0) {
+          alert('Veuillez entrer une quantité valide.');
+          return;
+        }
+
+        if (quantity > availableQuantity) {
+          alert(`La quantité demandée pour ${name} dépasse la quantité disponible (${availableQuantity} en stock).`);
+          return;
+        }
+
+        // Mise à jour du stock affiché
+        stockSpan.innerText = availableQuantity - quantity;
+
+        // Ajouter au tableau
+        const tableBody = document.querySelector('#cart-table tbody');
+        const totalPrice = price * quantity;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${id}</td>
+          <td>${name}</td>
+          <td>${quantity}</td>
+          <td>${totalPrice.toFixed(2)} Ar</td>
+        `;
+        tableBody.appendChild(newRow);
+
+        // Ajouter au panier interne
+        cart.push({ id, name, quantity, totalPrice });
+
+        alert(`Ajouté ${quantity} x ${name} au prix total de ${totalPrice.toFixed(2)} Ar.`);
+      });
+    });
+
+    // Bouton "Passer au commande"
+    document.getElementById('checkout-btn').addEventListener('click', async () => {
+      if (cart.length === 0) {
+        alert('Votre panier est vide.');
+        return;
+      }
+
+      const totalAmount = cart.reduce((sum, item) => sum + item.totalPrice, 0);
+
+      try {
+        const response = await fetch('/transactions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cart, total: totalAmount })
+        });
+
+        if (response.ok) {
+          alert('Commande validée avec succès !');
+          cart.length = 0; // Réinitialiser le panier
+          document.querySelector('#cart-table tbody').innerHTML = ''; // Vider le tableau
+        } else {
+          const error = await response.text();
+          alert(`Erreur lors de la commande : ${error}`);
+        }
+      } catch (error) {
+        console.error('Erreur lors de l\'envoi des données :', error);
+        alert('Une erreur est survenue. Veuillez réessayer.');
+      }
+    });
+  });
+</script>
+
+
+
+
+</body>
+</html>

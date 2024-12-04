@@ -1,0 +1,39 @@
+<div class="min-h-screen flex items-center justify-center">
+  <div class="bg-white text-black p-8 rounded shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Signup</h1>
+    <form action="/signup" method="POST">
+      <div class="mb-4">
+        <label for="name" class="block font-semibold">Your Name</label>
+        <input type="text" id="name" name="name" required class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold">Who are You?</label>
+        <div>
+          <label><input type="radio" name="role" value="Pharmacien" required> Pharmacist</label>
+          <label><input type="radio" name="role" value="Assistant Pharmacien"> Assistant Pharmacist</label>
+          <label><input type="radio" name="role" value="Caissier"> Cashier</label>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label for="contact" class="block font-semibold">Your Contact Number</label>
+        <input type="text" id="contact" name="contact" required class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <div class="mb-4">
+        <label for="nic" class="block font-semibold">Your NIC</label>
+        <input type="text" id="nic" name="nic" required class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block font-semibold">Your Email</label>
+        <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block font-semibold">Your Password</label>
+        <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded">
+      </div>
+      <button type="submit" class="bg-blue-500 text-white w-full py-2 rounded">SignUp</button>
+    </form>
+    <div class="text-center mt-4">
+      <a href="/login" class="text-blue-500">Login</a>
+    </div>
+  </div>
+</div>

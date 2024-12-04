@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Médecins</title>
+    <link rel="stylesheet" href="/path/to/your/styles.css"> <!-- Remplacez par le chemin de votre fichier CSS -->
+</head>
+<body>
+    <h1>Liste des Médecins</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Contact</th>
+                <th>Numéro d'Enregistrement</th>
+                <th>Email</th>
+                <th>Photo de Profil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each medecins}}
+            <tr>
+                <td>{{nom}}</td>
+                <td>{{contact}}</td>
+                <td>{{numero_enregistrement}}</td>
+                <td>{{email}}</td>
+                <td>
+                    <img src="{{photo_profil}}" alt="Photo de {{nom}}" width="150" height="150">
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</body>
+</html>

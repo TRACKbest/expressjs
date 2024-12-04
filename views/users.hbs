@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System - Dark Mode</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2b2b3c;
+            color: #e0e0e0;
+        }
+        .sidebar h2 {
+            text-align: center;
+            padding: 20px 0;
+            color: #20c997;
+        }
+        .sidebar .nav-link {
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #3a3a4d;
+        }
+        .sidebar .nav-link.active {
+            background-color: #495057;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #282838;
+        }
+        .tab-pane {
+            padding: 20px;
+            border: 1px solid #3a3a4d;
+            background-color: #2b2b3c;
+            border-radius: 5px;
+        }
+        .btn-signup {
+            background-color: #20c997;
+            color: white;
+        }
+        .btn-signup:hover {
+            background-color: #17a589;
+        }
+        .form-control {
+            background-color: #1e1e2f;
+            color: #e0e0e0;
+            border: 1px solid #495057;
+        }
+        .form-control:focus {
+            background-color: #1e1e2f;
+            color: #fff;
+            border-color: #20c997;
+            box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25);
+        }
+        .form-check-input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .nav-tabs .nav-link {
+            color: #e0e0e0;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #3a3a4d;
+            color: #20c997;
+            border-color: #495057 #495057 #282838;
+        }
+        header h1 {
+            color: #20c997;
+        }
+        header .btn {
+            background-color: #495057;
+            color: #e0e0e0;
+        }
+        header .btn:hover {
+            background-color: #3a3a4d;
+        }
+
+
+           .success-checkmark {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #28a745;
+      margin: 0 auto;
+      position: relative;
+      animation: popIn 0.5s ease-out;
+    }
+
+    .checkmark {
+      width: 50px;
+      height: 25px;
+      border: 5px solid white;
+      border-top: none;
+      border-right: none;
+      transform: rotate(-45deg);
+      position: absolute;
+      animation: drawCheck 0.5s ease-out 0.5s forwards;
+      opacity: 0;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes drawCheck {
+      0% {
+        opacity: 0;
+        transform: rotate(-45deg) scale(0);
+      }
+      100% {
+        opacity: 1;
+        transform: rotate(-45deg) scale(1);
+      }
+    }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <h2>PharmaCare</h2>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="/doctor-orders" class="nav-link"><i class="fas fa-file-medical"></i> Doctor Orders</a>
+            </li>
+            <li class="nav-item">
+                <a href="/medicaments" class="nav-link"><i class="fas fa-cash-register"></i> PoS</a>
+            </li>
+            <li class="nav-item">
+                <a href="/suppliers" class="nav-link"><i class="fas fa-truck"></i> Suppliers</a>
+            </li>
+            <li class="nav-item">
+                <a href="/users" class="nav-link active"><i class="fas fa-user-alt"></i> Users</a>
+            </li>
+            <li class="nav-item">
+                <a href="/logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Pharmacist</h1>
+           
+        </header>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="add-accounts-tab" data-bs-toggle="tab" data-bs-target="#add-accounts" type="button" role="tab" aria-controls="add-accounts" aria-selected="true">Add New Accounts</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="manage-doctor-tab" data-bs-toggle="tab" data-bs-target="#manage-doctor" type="button" role="tab" aria-controls="manage-doctor" aria-selected="false">Manage Doctor Account</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="view-stats-tab" data-bs-toggle="tab" data-bs-target="#view-stats" type="button" role="tab" aria-controls="view-stats" aria-selected="false">View User Statistics</button>
+            </li>
+        </ul>
+<!-- Affichage du message de succès -->
+    {{#if successMessage}}
+      <div id="successAlert" class="text-center mb-4">
+        <div class="success-checkmark">
+          <div class="checkmark"></div>
+        </div>
+        <p class="text-success mt-3">{{successMessage}}</p>
+      </div>
+    {{/if}}
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Add Accounts -->
+            <div class="tab-pane fade show active" id="add-accounts" role="tabpanel" aria-labelledby="add-accounts-tab">
+                <h3>Add New Doctor Account</h3>
+                <form id="addDoctorForm" action="/add-doctor" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="doctorName" class="form-label">Doctor Name</label>
+        <input type="text" class="form-control" id="doctorName" name="nom" placeholder="Enter doctor's full name" required>
+    </div>
+    <div class="mb-3">
+        <label for="doctorContact" class="form-label">Doctor Contact Number</label>
+        <input type="tel" class="form-control" id="doctorContact" name="contact" placeholder="Enter doctor's phone number" pattern="[0-9]{10}" required>
+    </div>
+    <div class="mb-3">
+        <label for="slmcNumber" class="form-label">Doctor SLMC Register Number</label>
+        <input type="text" class="form-control" id="slmcNumber" name="numero_enregistrement" placeholder="Enter SLMC register number" required>
+    </div>
+    <div class="mb-3">
+        <label for="doctorEmail" class="form-label">Doctor Email</label>
+        <input type="email" class="form-control" id="doctorEmail" name="email" placeholder="Enter doctor's email" required>
+    </div>
+    <div class="mb-3">
+        <label for="doctorPassword" class="form-label">Doctor Password</label>
+        <input type="password" class="form-control" id="doctorPassword" name="mot_de_passe" placeholder="Create a password for doctor" required>
+    </div>
+    <div class="mb-3">
+        <label for="profilePicture" class="form-label">Choose Profile Picture</label>
+        <input type="file" class="form-control" id="profilePicture" name="photo_profil" accept="image/*">
+    </div>
+    <button type="submit" class="btn btn-signup">Sign Up</button>
+</form>
+
+            </div>
+
+
+{{!-- edit doctor --}}
+            <div class="modal fade" id="editDoctorModal" tabindex="-1" aria-labelledby="editDoctorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editDoctorForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editDoctorModalLabel">Edit Doctor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editDoctorId" />
+
+                    <div class="mb-3">
+                        <label for="editDoctorName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editDoctorName" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editDoctorContact" class="form-label">Contact</label>
+                        <input type="text" class="form-control" id="editDoctorContact" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editDoctorRegistrationNumber" class="form-label">Registration Number</label>
+                        <input type="text" class="form-control" id="editDoctorRegistrationNumber" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editDoctorEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editDoctorEmail" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+            <!-- Manage Doctor Account -->
+            <div class="tab-pane fade" id="manage-doctor" role="tabpanel" aria-labelledby="manage-doctor-tab">
+    <h3>Manage Doctor Accounts</h3>
+    <!-- Search bar -->
+    <div class="mb-3">
+        <input type="text" id="searchDoctor" class="form-control" placeholder="Search for a doctor by name, email, or contact">
+    </div>
+    
+    <!-- Doctors table -->
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Email</th>
+                <th>Registration No.</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="doctorTableBody">
+            <!-- Rows will be populated dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<div class="tab-pane fade" id="view-stats" role="tabpanel" aria-labelledby="view-stats-tab">
+    <h3>View User Statistics</h3>
+
+    <!-- Statistiques résumées -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white text-center">
+                <div class="card-body">
+                    <h5>Total Doctors</h5>
+                    <h2 id="totalDoctors">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white text-center">
+                <div class="card-body">
+                    <h5>Total Pharmacists</h5>
+                    <h2 id="totalPharmacists">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white text-center">
+                <div class="card-body">
+                    <h5>Total Users</h5>
+                    <h2 id="totalUsers">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphique des enregistrements mensuels -->
+    <div class="mb-4">
+        <canvas id="userRegistrationChart"></canvas>
+    </div>
+
+    <!-- Tableau des statistiques détaillées -->
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Category</th>
+                <th>Total Users</th>
+            </tr>
+        </thead>
+        <tbody id="userStatsTableBody">
+            <!-- Contenu dynamique -->
+        </tbody>
+    </table>
+</div>
+
+      
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Fetch and display doctors
+    fetchDoctors();
+
+    // Search functionality
+    document.getElementById('searchDoctor').addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#doctorTableBody tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+    });
+});
+
+// Fetch doctors and populate table
+function fetchDoctors() {
+    fetch('/manage-doctors')
+        .then(res => res.json())
+        .then(data => {
+            const tableBody = document.getElementById('doctorTableBody');
+            tableBody.innerHTML = ''; // Clear table
+            data.forEach((doctor, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${doctor.nom}</td>
+                    <td>${doctor.contact}</td>
+                    <td>${doctor.email}</td>
+                    <td>${doctor.numero_enregistrement}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editDoctor(${doctor.id_medecin})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteDoctor(${doctor.id_medecin})">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(err => console.error('Error fetching doctors:', err));
+}
+
+// Edit doctor
+function editDoctor(id) {
+    // Récupérer les données du médecin via une API
+    fetch(`/doctors/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            // Pré-remplir le formulaire modal
+            document.getElementById('editDoctorId').value = data.id_medecin;
+            document.getElementById('editDoctorName').value = data.nom;
+            document.getElementById('editDoctorContact').value = data.contact;
+            document.getElementById('editDoctorRegistrationNumber').value = data.numero_enregistrement;
+            document.getElementById('editDoctorEmail').value = data.email;
+
+            // Afficher le modal
+            const editModal = new bootstrap.Modal(document.getElementById('editDoctorModal'));
+            editModal.show();
+        })
+        .catch(err => console.error('Error fetching doctor data:', err));
+}
+
+// Soumettre les modifications
+document.getElementById('editDoctorForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const doctorId = document.getElementById('editDoctorId').value;
+    const updatedData = {
+        nom: document.getElementById('editDoctorName').value,
+        contact: document.getElementById('editDoctorContact').value,
+        numero_enregistrement: document.getElementById('editDoctorRegistrationNumber').value,
+        email: document.getElementById('editDoctorEmail').value
+    };
+
+    fetch(`/doctors/${doctorId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                alert('Doctor updated successfully!');
+                location.reload(); // Recharger la liste après modification
+            } else {
+                alert('Failed to update doctor. Please try again.');
+            }
+        })
+        .catch(err => console.error('Error updating doctor:', err));
+});
+
+
+// Delete doctor
+function deleteDoctor(id) {
+    if (confirm('Are you sure you want to delete this doctor?')) {
+        fetch(`/delete-doctor/${id}`, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                fetchDoctors(); // Refresh table
+                fetchUserStats();
+            })
+            .catch(err => console.error('Error deleting doctor:', err));
+    }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Attendre que le DOM soit chargé avant d'exécuter le script
+document.addEventListener('DOMContentLoaded', () => {
+    fetchUserStats();
+    handleSuccessAlert();
+    setupAddDoctorForm();
+});
+
+function fetchUserStats() {
+    fetch('/user-stats')
+        .then(res => res.json())
+        .then(data => {
+            updateUserStats(data);
+            renderChart(data.monthlyRegistrations);
+        })
+        .catch(err => console.error('Erreur lors de la récupération des statistiques utilisateurs :', err));
+}
+
+function updateUserStats(data) {
+    // Mettre à jour le nombre total de docteurs
+    document.getElementById('totalDoctors').textContent = data.totalDoctors || 0;
+
+    // Trouver les statistiques pour les pharmaciens
+    const pharmacists = data.stats.find(row => row.category === 'Pharmacien');
+    const totalPharmacists = pharmacists ? pharmacists.count : 0;
+    document.getElementById('totalPharmacists').textContent = totalPharmacists;
+
+    // Calculer le total des utilisateurs
+    const totalUsers = data.stats.reduce((sum, row) => sum + row.count, 0);
+    document.getElementById('totalUsers').textContent = totalUsers;
+
+    // Mettre à jour le tableau des statistiques
+    const tableBody = document.getElementById('userStatsTableBody');
+    tableBody.innerHTML = '';
+    data.stats.forEach((stat, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${stat.category}</td>
+            <td>${stat.count}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function renderChart(monthlyRegistrations) {
+    const ctx = document.getElementById('userRegistrationChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: monthlyRegistrations.map(entry => entry.month),
+            datasets: [{
+                label: 'Inscriptions mensuelles',
+                data: monthlyRegistrations.map(entry => entry.count),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
+}
+
+function handleSuccessAlert() {
+    const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+        // Faire disparaître le message après 3 secondes
+        setTimeout(() => {
+            successAlert.style.display = 'none';
+            // Rafraîchir la page après 3 secondes
+            window.location.reload();
+        }, 3000);
+    }
+}
+
+function setupAddDoctorForm() {
+    const addDoctorForm = document.getElementById('addDoctorForm');
+    if (addDoctorForm) {
+        addDoctorForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            try {
+                const response = await fetch('/add-doctor', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showSuccessMessage(result.alert);
+                } else {
+                    console.error(result.error);
+                    alert('Une erreur est survenue : ' + result.error);
+                }
+            } catch (err) {
+                console.error('Erreur réseau :', err);
+                alert('Medécin ajouté avec succès.');
+            } finally {
+                addDoctorForm.reset(); // Réinitialiser le formulaire
+                fetchUserStats(); // Mettre à jour les statistiques
+            }
+        });
+    }
+}
+
+function showSuccessMessage(message) {
+    const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+        successAlert.innerHTML = `
+            <div class="success-checkmark">
+                <div class="checkmark"></div>
+            </div>
+            <p class="text-success mt-3">${message}</p>
+        `;
+        successAlert.style.display = 'block';
+    }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
