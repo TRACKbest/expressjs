@@ -185,7 +185,7 @@ app.post('/forgot-password', (req, res) => {
         },
       });
 
-      const resetUrl = `http://localhost:3000/reset-password/${token}`;
+      const resetUrl = `https://polyclinique-psfa.duckdns.org/reset-password/${token}`;
       const mailOptions = {
         to: email,
         from: 'support@pharmacare.com',
