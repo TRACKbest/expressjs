@@ -123,8 +123,8 @@ app.get('/login', (req, res) => {
 });
 
 // Route pour afficher un message JSON
-app.get('/Bonjour', (req, res) => {
-  res.json({ message: 'Bonjour Fares' });
+app.get('/toto', (req, res) => {
+  res.json({ message: 'toto' });
 });
 
 
